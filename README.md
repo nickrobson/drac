@@ -9,7 +9,7 @@ This was done as a side-project on top of COMP1927.
 * Nick Robson: Programming
 
 ## Licensing
-drac is licensed under GNU AFFERO GENERAL PUBLIC LICENSE.
+drac is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE v3.
 
 This means:
 
@@ -22,9 +22,9 @@ This means:
 |                              | Private Use    | |
 
 This means modifications:
-* must be open source
-* must include the same LICENSE
-* must provide access to anyone using the software via network
+* must be open source (Source Code is publically available)
+* must include the same LICENSE (use AGPL v3)
+* must provide full software access (including Source Code) to anyone using the software via network
 * must explicitly state changes between the modification and the original software
 
 Please see the provided LICENSE file for more information.
