@@ -1,9 +1,25 @@
 # drac
 A python implementation of the *incredibly* popular Fury of Dracula game.
 
-How do you play this glorious thing? Not sure, to be honest. The spec isn't that great.
 
-This was done as a side-project on top of COMP1927.
+## FAQ
+
+##### How do I launch the game?
+You can launch it from the `drac_launch.py` file, from console or otherwise. I'm working out a better way.
+
+##### How can I make this work how I want it to?
+See the `drac_config.py` file? That's drac's config. Use it wisely.
+
+##### How do I play this glorious thing?
+Use the config to change drac's mode:
+* **Plays**, **Turns**: The program's first argument is the past plays string.
+* **Interactive**: Just run `drac_launch.py`, it will greet you with the interactive menu.
+* **Networked**: WIP. Client-server system according to `drac_config.py`, allowing network play.
+* **Pygame**: WIP. Graphical representation of the game using the pygame module.
+* **AI Mode**: WIP. Allows AI modules to be used to battle it out.
+
+##### Why did you decide this was a good idea?
+COMP1927's second assessment is/was doing this in C, and I decided to do it in Python too, as a side project.
 
 ## Contributors
 * Nick Robson: Programming
