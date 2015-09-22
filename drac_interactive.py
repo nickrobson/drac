@@ -1,6 +1,6 @@
 import curses
 
-import drac, drac_common, drac_config, drac_plays
+import drac_game, drac_common, drac_config, drac_plays
 
 def run(game, stdscr):
 
@@ -232,8 +232,6 @@ def run(game, stdscr):
         if pl > 4: pl = 0
     if not quit:
         stdscr.getstr()
-
-
 
 def run_interactive(stdscr):
     run(drac.game, stdscr)

@@ -1,35 +1,57 @@
-import drac_common
+#!/usr/bin/python
 
-game            = drac_common.Game()
-game.trail      = drac_common.DracTrail()
-game.trail.locs = []
-game.players    = []
-game.locations  = []
+import sys, os, re, drac_game, drac_common, drac_config, drac_plays
 
-for i in range(len(drac_common.places)):
-    l        = drac_common.Location()
-    l.index  = i
-    name = ''
-    for j in range(len(drac_common.places[i])):
-        if j == 0 or drac_common.places[i][j-1] == '_':
-            name += drac_common.places[i][j].capitalize()
-        elif drac_common.places[i][j] == '_':
-            name += ' '
-        else:
-            name += drac_common.places[i][j]
-    l.name       = name
-    l.abbrev     = drac_common.abbrevs[i]
-    l.traps      = []
-    l.vampires   = []
-    l.links      = []
-    game.locations.append(l)
+class dummy_stdscr:
+    def getstr(self):
+        return raw_input('').lower().strip()
+    def addstr(self, s):
+        print s,
+    def clear(self):
+        print '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'
+    def deleteln(self):
+        return
+    def delch(self, y, x):
+        return
+    def move(self, y, x):
+        return
+    def getyx(self):
+        return (0, 0)
+    def refresh(self):
+        return
 
-for i in range(5):
-    p          = drac_common.Player()
-    p.index    = i
-    p.letter   = drac_common.players[i]
-    p.name     = drac_common.names[i]
-    p.prevLoc  = None
-    p.location = None
-    p.health   = 40 if drac_common.players[i] == 'D' else 9
-    game.players.append(p)
+class dummy_curses:
+    def echo(self):
+        return
+    def wrapper(self, main):
+        dummy = dummy_stdscr()
+        main(dummy)
+
+try:
+    import curses
+except ImportError:
+    curses = dummy_curses()
+
+stdscr = dummy_stdscr()
+
+if drac_config.mode == 'i' or drac_config.mode == 'interactive':
+    import drac_interactive
+    curses.wrapper(drac_interactive.run_interactive)
+elif drac_config.mode in ['n', 'networked']:
+    import drac_network
+    curses.wrapper(drac_network.setup)
+else:
+    if drac_config.mode in ['p', 'plays', 't', 'turns']:
+        if len(sys.argv) <= 1:
+            stdscr.addstr('For mode=\'%s\' you must supply a pastPlays string.\n' % drac_config.mode)
+            sys.exit(1)
+        pastPlays = sys.argv[1]
+        for s in re.findall(' D(C|S)\?', pastPlays):
+            stdscr.addstr('ERROR: Past plays contains an unknown city/sea!\n')
+            stdscr.addstr('ERROR: You must supply a string given to Dracula\n')
+            sys.exit(1)
+
+        for play in re.findall('\S+', pastPlays):
+            drac_plays.do_turn(stdscr, game, play, drac_config.mode == 'steps', True)
+            if game.ended:
+                break
