@@ -25,51 +25,57 @@ class dummy_curses:
 
 class Listener:
     def on_game_start(self, game):
-        return
+        pass
     def on_dracula_win(self, game):
-        return
+        pass
     def on_hunters_win(self, game):
-        return
+        pass
 
     def on_turn_start(self, game):
-        return
+        pass
     def on_turn_end(self, game):
-        return
+        pass
 
     def on_invalid_player(self, game, player):
-        return
+        pass
     def on_invalid_move_unknown(self, game, player, move):
-        return
+        pass
     def on_invalid_move_links(self, game, player, fro, to):
-        return
+        pass
+    def on_invalid_move_cant_go(self, game, player, fro, to):
+        pass
+    def on_invalid_move_dracula_stay(self, game, p, loc):
+        pass
 
     def on_trap_place(self, game, loc):
-        return
+        pass
     def on_trap_vanish(self, game, loc):
-        return
+        pass
     def on_vampire_place(self, game, loc):
-        return
+        pass
     def on_vampire_mature(self, game, loc):
-        return
+        pass
+    def on_stay_castle_dracula(self, game):
+        pass
 
     def on_hunter_find_trail(self, game, player, loc):
-        return
+        pass
     def on_hunter_find_dracula(self, game, player, loc):
-        return
-    def on_hunter_damage(self, game, player, damage, old_health, new_health):
-        return
+        pass
     def on_hunter_respawn(self, game, player):
-        return
+        pass
 
     def on_player_begin(self, game, player, loc):
-        return
+        pass
     def on_player_move(self, game, player, fro, to):
-        return
+        pass
     def on_player_stay(self, game, player, loc, heal):
-        return
+        pass
+    def on_player_damage(self, game, player, damage, new_health):
+        pass
 
     def on_dracula_water_damage(self, game, loc):
-        return
+        pass
 
 class SimpleListener(Listener):
 
@@ -79,7 +85,7 @@ class SimpleListener(Listener):
         self.stdscr = stdscr if stdscr is not None else dummy_stdscr()
 
     def on_game_start(self, game):
-        return
+        pass
     def on_dracula_win(self, game):
         self.stdscr.addstr("\n\nScore hit 0! Dracula wins!\n")
         self.stdscr.addstr("Score hit 0! Dracula wins!\n")
@@ -103,7 +109,11 @@ class SimpleListener(Listener):
     def on_invalid_move_unknown(self, game, player, move):
         self.stdscr.addstr("Invalid location for %s: %s!\n" % (player.name, move))
     def on_invalid_move_links(self, game, player, fro, to):
-        self.stdscr.addstr("%17s has an invalid move (no links %s -> %s\n)" % (p.name, fro.disp(False), to.disp(False)))
+        self.stdscr.addstr("Invalid move for %s: no links %s -> %s\n" % (player.name, fro.disp(False), to.disp(False)))
+    def on_invalid_move_cant_go(self, game, player, fro, to):
+        self.stdscr.addstr("Invalid move for %s: can't go to %s\n" % (player.name, to.disp(False)))
+    def on_invalid_move_dracula_stay(self, game, player, loc):
+        self.stdscr.addstr("Invalid move for %s: can't stay in %s without HIDE!\n" % (player.name, loc.disp(False)))
 
     def on_trap_place(self, game, loc):
         self.stdscr.addstr("%17s drops off a trap in %s.\n" % ("Dracula", loc.disp(False)))
@@ -113,25 +123,27 @@ class SimpleListener(Listener):
         self.stdscr.addstr("%17s makes a vampire at %s.\n" % ("Dracula", loc.disp(False)))
     def on_vampire_mature(self, game, loc):
         self.stdscr.addstr("%17s matures in %s! (score -13)\n" % ("A vampire", loc.disp(False)))
+    def on_stay_castle_dracula(self, game, player):
+        self.stdscr.addstr("%17s stays at Castle Dracula. +10 BP (%d -> %d)\n" % (player.name, player.health - 10, player.health))
 
     def on_hunter_find_trail(self, game, player, loc):
         self.stdscr.addstr("%17s finds %s on Dracula's trail!\n" % (player.name, loc.disp(False)))
     def on_hunter_find_dracula(self, game, player, loc):
         self.stdscr.addstr("%17s finds %s in %s! A skirmish follows!\n" % (player.name, "Dracula", loc.disp(False)))
-    def on_hunter_damage(self, game, player, damage, old_health, new_health):
-        self.stdscr.addstr("%17s takes %d damage! (%d remaining)\n" % (player.name, min(old_health, damage), max(0, new_health)))
     def on_hunter_respawn(self, game, player):
         self.stdscr.addstr("%17s dies, and is reborn at %s.\n" % (player.name, game.locations[59].disp(False)))
 
     def on_player_begin(self, game, player, loc):
         self.stdscr.addstr("%17s begins in %s.\n" % (player.name, loc.disp(False)))
     def on_player_move(self, game, player, fro, to):
-        self.stdscr.addstr("%17s moves %s -> %s.\n" % ("Dracula", fro.disp(False), to.location.disp(False)))
+        self.stdscr.addstr("%17s moves %s -> %s.\n" % (player.name, fro.disp(False), to.disp(False)))
     def on_player_stay(self, game, player, loc, heal):
-        if player.index == 4 and loc.abbrev == 'CD':
-            self.stdscr.addstr("%17s stays at Castle Dracula. +10 BP (%d -> %d)\n" % (player.name, max(0, player.health - heal), player.health))
+        if heal > 0:
+            self.stdscr.addstr("%17s stays in %s. +%d HP (%d -> %d)\n" % (player.name, loc.disp(False), heal, p.health - heal, p.health))
         else:
             self.stdscr.addstr("%17s stays in %s.\n" % (player.name, loc.disp(False)))
+    def on_player_damage(self, game, player, damage, new_health):
+        self.stdscr.addstr("%17s takes %d damage! (%d remaining)\n" % (player.name, min(damage + new_health, damage), max(0, new_health)))
 
     def on_dracula_water_damage(self, game, player, loc):
         self.stdscr.addstr("%17s takes 2 damage from the %s. (%d remaining)\n" % (player.name, loc.disp(False), max(0, p.health)))

@@ -27,6 +27,18 @@ class Location:
             return "%s (%s) (%d)" % (self.name, self.abbrev, self.index)
         else:
             return "%s (%s)" % (self.name, self.abbrev)
+    def show_links(self, game, player):
+        types = ['road', 'rail', 'boat']
+        st = '%s links:\n' % self.disp(True)
+        if game.links:
+            for loc in game.locations:
+                if game.drac_links.haslink(game, loc.index, self.index, player, 1):
+                    st += '\troad to %s\n' % loc.disp(False)
+                if game.drac_links.haslink(game, loc.index, self.index, player, 2):
+                    st += '\trail to %s\n' % loc.disp(False)
+                if game.drac_links.haslink(game, loc.index, self.index, player, 3):
+                    st += '\tboat to %s\n' % loc.disp(False)
+        return st
 
 class Player:
     index    = -1
@@ -40,16 +52,17 @@ class DracTrail:
     locs     = []
 
 class Game:
-    turn      = 0
-    lastTurn  = -1
-    score     = 366
-    players   = []
-    locations = []
-    trail     = None
-    links     = False
-    ended     = False
-    lastValid = True
-    listener  = drac_listener.SimpleListener()
+    turn       = 0
+    lastTurn   = -1
+    score      = 366
+    players    = []
+    locations  = []
+    trail      = None
+    links      = False
+    ended      = False
+    lastValid  = True
+    listener   = drac_listener.SimpleListener()
+    drac_links = None
 
     def get_location(i):
         for loc in game.locations:

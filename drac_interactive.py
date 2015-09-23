@@ -1,6 +1,10 @@
 import curses
 
-import drac_game, drac_common, drac_config, drac_plays
+import drac_actor, drac_common, drac_config, drac_game, drac_listener
+
+class InteractiveListener(drac_listener.SimpleListener):
+    def on_turn_start(self, game):
+        pass
 
 def run(game, stdscr):
 
@@ -10,31 +14,11 @@ def run(game, stdscr):
     if win_size[0] < 45 or win_size[1] < 75:
         curses.endwin()
         print "Your terminal is too small. Try making it bigger."
+        raw_input("")
         return
 
     curses.echo()
     stdscr.addstr('Preparing game...\n')
-
-    if drac_config.links:
-        stdscr.addstr('Links are enabled in config.\nSearching for links module...')
-        try:
-            import drac_links
-            stdscr.addstr(' Found!\n')
-        except ImportError:
-            drac_links = None
-            stdscr.addstr(' Missing!\n')
-    else:
-        drac_links = None
-        stdscr.addstr('Links disabled in config!\n')
-
-    if drac_links is not None:
-        stdscr.addstr('Loading links...')
-        try:
-            drac_links.addlinks(game)
-            game.links = True
-            stdscr.addstr(' Done!\n')
-        except Exception:
-            stdscr.addstr(' Failed!\n')
 
     stdscr.refresh()
 
@@ -47,10 +31,13 @@ def run(game, stdscr):
         return
     pl = 0
     quit = False
+
+    game.listener = InteractiveListener(stdscr)
+
     while not game.ended:
         if pl == 0:
             stdscr.addstr('###########################\n')
-            stdscr.addstr('######## Turn %4d ########\n' % (game.turn/5+1))
+            stdscr.addstr('######## Turn %4d ########\n' % (game.turn/5))
             stdscr.addstr('###########################\n')
             stdscr.addstr('\nType \'?\' to see what you can do!\n\n')
         pl_letter = drac_common.players[pl]
@@ -104,10 +91,7 @@ def run(game, stdscr):
                                 seen_moves = []
                                 if game.links:
                                     for loc in game.locations:
-                                        if drac_links.haslink(game, loc.index, p.location.index, p, 1) or drac_links.haslink(game, loc.index, p.location.index, p, 3):
-                                            seen_moves.append(loc)
-                                        if pl != 4 and drac_links.hasanylink(game, loc.index, p.location.index, p, (game.turn/5+pl)%4):
-                                            #if loc not in seen_moves:
+                                        if game.drac_links.hasanylink(game, loc.index, p.location.index, p, (game.turn/5+pl)%4):
                                             seen_moves.append(loc)
                                 else:
                                     for loc in game.locations:
@@ -138,15 +122,7 @@ def run(game, stdscr):
                             if p.location is None:
                                 stdscr.addstr('You are not in a town\n')
                             else:
-                                types = ['road', 'rail', 'boat']
-                                stdscr.addstr('%s links:\n' % p.location.disp(True))
-                                for loc in game.locations:
-                                    if drac_links.haslink(drac.game, loc.index, p.location.index, p, 1):
-                                        stdscr.addstr('\troad to %s\n' % loc.disp(False))
-                                    if p.index != 4 and drac_links.haslink(drac.game, loc.index, p.location.index, p, 2):
-                                        stdscr.addstr('\trail to %s\n' % loc.disp(False))
-                                    if drac_links.haslink(drac.game, loc.index, p.location.index, p, 3):
-                                        stdscr.addstr('\tboat to %s\n' % loc.disp(False))
+                                stdscr.addstr(p.location.show_links(game, drac_links, p))
                         elif text == 'trail' and pl == 4:
                             if len(game.trail.locs) == 0:
                                 stdscr.addstr('Your trail is empty!\n')
@@ -227,7 +203,7 @@ def run(game, stdscr):
                     break
             if quit:
                 break
-            drac_plays.do_turn(stdscr, game, pl_letter + move.upper(), False, False)
+            drac_actor.do_turn(stdscr, game, pl_letter + move.upper())
         if quit:
             break
         if pl == 4:

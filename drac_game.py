@@ -1,4 +1,4 @@
-import drac_common
+import drac_common, drac_config
 
 game            = drac_common.Game()
 game.trail      = drac_common.DracTrail()
@@ -33,3 +33,20 @@ for i in range(5):
     p.location = None
     p.health   = 40 if drac_common.players[i] == 'D' else 9
     game.players.append(p)
+
+if drac_config.links:
+    try:
+        import drac_links
+    except ImportError:
+        drac_links = None
+else:
+    drac_links = None
+
+if drac_links is not None:
+    try:
+        drac_links.addlinks(game)
+        game.links = True
+    except Exception:
+        pass
+
+game.drac_links = drac_links

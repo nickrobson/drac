@@ -4,7 +4,7 @@ class Link:
     t = -1
 
 def haslink(game, a, b, p, t):
-    if p.index == 4:
+    if p is not None and p.index == 4:
         if game.locations[a].abbrev == 'JM' or game.locations[b].abbrev == 'JM':
             return False
     if a == b or not game.links:
@@ -15,7 +15,7 @@ def haslink(game, a, b, p, t):
     return False
 
 def hasraillink(game, a, b, p, length):
-    if p.index == 4:
+    if p is not None and p.index == 4:
         return False
     loca = game.locations[min(a, b)]
     if a == b:
