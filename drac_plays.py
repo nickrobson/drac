@@ -1,16 +1,17 @@
 import drac_common, drac_links
 
 def do_turn(stdscr, game, play, steps, print_turns):
+
+    if game.turn == 0:
+        game.listener.on_game_start(game)
+
     game.lastValid = True
 
-    while len(play) < 7:
+    while len(play) < 3:
         play = play + "."
 
     if game.score <= 0:
-        stdscr.addstr("\n\nScore hit 0! Dracula wins!\n")
-        stdscr.addstr("Score hit 0! Dracula wins!\n")
-        stdscr.addstr("Score hit 0! Dracula wins!\n")
-        stdscr.addstr("Score hit 0! Dracula wins!\n\n")
+        game.listener.on_dracula_win(game)
         game.ended = True
         return
 
@@ -97,15 +98,13 @@ def do_turn(stdscr, game, play, steps, print_turns):
                 game.ended = True
                 return
         if print_turns:
-            stdscr.addstr("###########################\n")
-            stdscr.addstr("######## Turn %4d ########\n" % (actualTurn+1))
-            stdscr.addstr("###########################\n")
+            game.listener.on_turn_start(game)
     player = -1
     for i in range(5):
         if play[0] == game.players[i].letter:
             player = i
     if player == -1:
-        stdscr.addstr("Invalid player: " + play[0] + "!\n")
+        game.listener.on_invalid_player(game, play[0])
         game.lastValid = False
         return
     p = game.players[player]
@@ -153,7 +152,7 @@ def do_turn(stdscr, game, play, steps, print_turns):
 
     if p.letter == 'D':
         trap    = True
-        vampire = actualTurn > 0 and actualTurn % 13 == 12
+        vampire = actualTurn % 13 == 0
         action  = play[5]
 
         if special:
@@ -196,6 +195,7 @@ def do_turn(stdscr, game, play, steps, print_turns):
             v.matures = actualTurn + 6
             p.location.vampires.append(v)
             stdscr.addstr("%17s makes a vampire at %s.\n" % ("Dracula", p.location.disp(False)))
+            
         if p.location.abbrev == "CD":
             prevHealth = p.health
             p.health += 10

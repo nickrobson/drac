@@ -4,9 +4,15 @@ import drac_game, drac_common, drac_config, drac_plays
 
 def run(game, stdscr):
 
-    curses.echo()
-
     stdscr.clear()
+
+    win_size = stdscr.getmaxyx()
+    if win_size[0] < 45 or win_size[1] < 75:
+        curses.endwin()
+        print "Your terminal is too small. Try making it bigger."
+        return
+
+    curses.echo()
     stdscr.addstr('Preparing game...\n')
 
     if drac_config.links:
@@ -234,4 +240,4 @@ def run(game, stdscr):
         stdscr.getstr()
 
 def run_interactive(stdscr):
-    run(drac.game, stdscr)
+    run(drac_game.game, stdscr)

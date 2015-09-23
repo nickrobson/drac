@@ -1,3 +1,5 @@
+import drac_listener
+
 players   = ['G', 'S', 'H', 'M', 'D']
 seas      = [0, 4, 7, 10, 23, 32, 33, 43, 48, 64]
 specials  = ['HI', 'TP', 'D1', 'D2', 'D3', 'D4', 'D5']
@@ -47,6 +49,7 @@ class Game:
     links     = False
     ended     = False
     lastValid = True
+    listener  = drac_listener.SimpleListener()
 
     def get_location(i):
         for loc in game.locations:

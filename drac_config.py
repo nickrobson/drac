@@ -29,7 +29,7 @@ Valid settings are:
     If ai' or 'ai_mode' ; drac enters AI mode, calling ./ai/hunter(_NAME).py and ./ai/dracula.py
                                                              if _NAME is present, use it instead of hunter.py
 """
-mode  = 'i'
+mode  = 'p'
 
 """
 Whether the current user is the client or the server.

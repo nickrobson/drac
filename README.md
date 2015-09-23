@@ -29,13 +29,13 @@ drac is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE v3.
 
 This means:
 
-| **Required** | **Permitted** | **Forbidden** |
-| --- | --- | --- |
+| **Required**                 | **Permitted**  | **Forbidden**|
+| ---------------------------- | -------------- | ------------ |
 | Disclose Source              | Commercial Use | Hold Liable  |
 | License and copyright notice | Distribution   | Sublicensing |
-| Network Use is Distribution  | Modification   | |
-| State Changes                | Patent Grant   | |
-|                              | Private Use    | |
+| Network Use is Distribution  | Modification   |              |
+| State Changes                | Patent Grant   |              |
+|                              | Private Use    |              |
 
 This means modifications:
 * must be open source (Source Code is publically available)
