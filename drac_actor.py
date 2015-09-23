@@ -1,4 +1,6 @@
-import drac_common, drac_links
+import drac_common
+import drac_links
+
 
 def do_turn(stdscr, game, play):
 
@@ -33,7 +35,7 @@ def do_turn(stdscr, game, play):
     p = game.players[player]
 
     abbrev = play[1] + play[2]
-    place  = -1
+    place = -1
 
     for i in range(len(drac_common.abbrevs)):
         if abbrev == drac_common.abbrevs[i]:
@@ -63,24 +65,24 @@ def do_turn(stdscr, game, play):
         for l in game.locations:
             if p.letter == 'D':
                 for trap in l.traps:
-                    if trap.expires == actualTurn-1:
+                    if trap.expires == actualTurn - 1:
                         l.traps.remove(trap)
                         game.listener.on_trap_vanish(game, l)
             else:
                 for vamp in l.vampires:
-                    if vamp.matures == actualTurn-1:
+                    if vamp.matures == actualTurn - 1:
                         game.score -= 13
                         l.vampires.remove(vamp)
                         game.listener.on_vampire_mature(game, l)
 
     if p.letter == 'D':
-        trap    = True
+        trap = True
         vampire = actualTurn % 13 == 0
-        action  = "" # play[5]
+        action = ""  # play[5]
 
         if special:
             if abbrev == 'TP':
-                p.prevLoc  = p.location
+                p.prevLoc = p.location
                 p.location = game.locations[17]
             elif abbrev == 'HI':
                 p.prevLoc = p.location
@@ -88,8 +90,8 @@ def do_turn(stdscr, game, play):
             elif abbrev[0] == 'D':
                 back = int(abbrev[1])
                 if back <= len(game.trail.locs):
-                    p.prevLoc  = p.location
-                    p.location = game.locations[game.trail.locs[back-1]]
+                    p.prevLoc = p.location
+                    p.location = game.locations[game.trail.locs[back - 1]]
         else:
             if p.prevLoc is not None:
                 if not drac_links.haslink(game, p.location.index, loc.index, p, 1) and not drac_links.haslink(game, p.location.index, loc.index, p, 3):
@@ -105,18 +107,18 @@ def do_turn(stdscr, game, play):
                     game.listener.on_player_begin(game, p, loc)
                 else:
                     game.listener.on_player_move(game, p, p.location, loc)
-            
-            p.prevLoc  = p.location
+
+            p.prevLoc = p.location
             p.location = loc
 
-        if trap and not vampire and not p.location.index in drac_common.seas and len(p.location.traps) < 3:
-            t         = drac_common.Trap()
+        if trap and not vampire and p.location.index not in drac_common.seas and len(p.location.traps) < 3:
+            t = drac_common.Trap()
             t.expires = actualTurn + 6
             p.location.traps.append(t)
             game.listener.on_trap_place(game, p.location)
 
-        if vampire and not p.location.index in drac_common.seas and len(p.location.vampires) == 0:
-            v         = drac_common.Vampire()
+        if vampire and p.location.index not in drac_common.seas and len(p.location.vampires) == 0:
+            v = drac_common.Vampire()
             v.matures = actualTurn + 6
             p.location.vampires.append(v)
             game.listener.on_vampire_place(game, p.location)
@@ -143,12 +145,12 @@ def do_turn(stdscr, game, play):
             p.health = 9
 
         if p.location is not None:
-            if not drac_links.hasraillink(game, p.location.index, loc.index, p, (actualTurn+p.index)%4) and not drac_links.haslink(game, p.location.index, loc.index, p, 1) and not drac_links.haslink(game, p.location.index, loc.index, p, 3):
+            if not drac_links.hasraillink(game, p.location.index, loc.index, p, (actualTurn + p.index) % 4) and not drac_links.haslink(game, p.location.index, loc.index, p, 1) and not drac_links.haslink(game, p.location.index, loc.index, p, 3):
                 game.listener.on_invalid_move_links(game, p, p.location, loc)
                 game.lastValid = False
                 return
 
-        p.prevLoc  = p.location
+        p.prevLoc = p.location
         p.location = loc
 
         if p.prevLoc == p.location:

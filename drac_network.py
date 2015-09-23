@@ -1,6 +1,8 @@
-import socket, SocketServer, threading
-
+import socket
+import SocketServer
+import threading
 import drac_config
+
 
 class ForkedTCPRequestHandler(SocketServer.BaseRequestHandler):
 
@@ -10,8 +12,10 @@ class ForkedTCPRequestHandler(SocketServer.BaseRequestHandler):
         response = bytes("%s" % data)
         self.request.send(response)
 
+
 class ForkedTCPServer(SocketServer.ForkingMixIn, SocketServer.TCPServer):
     pass
+
 
 def client(ip, port, message):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -20,6 +24,7 @@ def client(ip, port, message):
     response = sock.recv(1024)
     print "Received: %s" % response
     sock.close()
+
 
 def setup(stdscr):
 
@@ -44,8 +49,8 @@ def setup(stdscr):
     else:
         server = ForkedTCPServer((HOST, PORT), ForkedTCPRequestHandler)
 
-        server_thread = threading.Thread(target=server.serve_forever) # Process forking upon request
-        server_thread.setDaemon(True) # Exit the server thread when the main thread terminates
+        server_thread = threading.Thread(target=server.serve_forever)  # Process forking upon request
+        server_thread.setDaemon(True)  # Exit the server thread when the main thread terminates
         server_thread.start()
 
         addr = server.server_address
@@ -54,4 +59,3 @@ def setup(stdscr):
         stdscr.addstr("Running on %s:%s" % (addr[0], addr[1]))
 
         server.shutdown()
-

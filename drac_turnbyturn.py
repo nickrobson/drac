@@ -1,6 +1,9 @@
-import sys, re
+import sys
+import re
+import drac_actor
+import drac_config
+import drac_game
 
-import drac_actor, drac_config, drac_game
 
 def run(stdscr):
     if len(sys.argv) <= 1:
@@ -17,7 +20,7 @@ def run(stdscr):
         drac_actor.do_turn(stdscr, drac_game.game, play)
         if drac_game.game.turn == turnBefore:
             drac_game.game.turn += 1
-        if drac_game.game.turn%5 == 0 and (drac_config.mode == 't' or drac_config.mode == 'turns'):
+        if drac_game.game.turn % 5 == 0 and (drac_config.mode == 't' or drac_config.mode == 'turns'):
             quit = False
             while not quit:
                 try:

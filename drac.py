@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
-import drac_listener, drac_config
+import drac_listener
+import drac_config
+
 
 try:
     import curses

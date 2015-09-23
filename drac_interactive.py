@@ -1,10 +1,15 @@
 import curses
+import drac_actor
+import drac_common
+import drac_config
+import drac_game
+import drac_listener
 
-import drac_actor, drac_common, drac_config, drac_game, drac_listener
 
 class InteractiveListener(drac_listener.SimpleListener):
     def on_turn_start(self, game):
         pass
+
 
 def run(game, stdscr):
 
@@ -37,7 +42,7 @@ def run(game, stdscr):
     while not game.ended:
         if pl == 0:
             stdscr.addstr('###########################\n')
-            stdscr.addstr('######## Turn %4d ########\n' % (game.turn/5))
+            stdscr.addstr('######## Turn %4d ########\n' % (game.turn / 5))
             stdscr.addstr('###########################\n')
             stdscr.addstr('\nType \'?\' to see what you can do!\n\n')
         pl_letter = drac_common.players[pl]
@@ -61,7 +66,7 @@ def run(game, stdscr):
                     if prevFirstRow >= 0:
                         while stdscr.getyx()[0] - prevFirstRow > 0:
                             stdscr.deleteln()
-                            stdscr.move(stdscr.getyx()[0]-1, stdscr.getyx()[1])
+                            stdscr.move(stdscr.getyx()[0] - 1, stdscr.getyx()[1])
                     prevFirstRow = stdscr.getyx()[0]
                     if text != '':
                         if text == '?' or text == 'help':
@@ -84,14 +89,14 @@ def run(game, stdscr):
                         elif text == 'moves':
                             if p.location is None:
                                 stdscr.addstr('Valid cities for you to set down in\n')
-                                for i in range((len(game.locations) + len(game.locations)%2)/2):
-                                    stdscr.addstr('%30s %30s\n' % (game.locations[i*2].disp(False), game.locations[i*2+1].disp(False) if len(game.locations) > i*2+1 else ''))
+                                for i in range((len(game.locations) + len(game.locations) % 2) / 2):
+                                    stdscr.addstr('%30s %30s\n' % (game.locations[i * 2].disp(False), game.locations[i * 2 + 1].disp(False) if len(game.locations) > i * 2 + 1 else ''))
                             else:
                                 stdscr.addstr('Valid moves:\n')
                                 seen_moves = []
                                 if game.links:
                                     for loc in game.locations:
-                                        if game.drac_links.hasanylink(game, loc.index, p.location.index, p, (game.turn/5+pl)%4):
+                                        if game.drac_links.hasanylink(game, loc.index, p.location.index, p, (game.turn / 5 + pl) % 4):
                                             seen_moves.append(loc)
                                 else:
                                     for loc in game.locations:
@@ -211,9 +216,11 @@ def run(game, stdscr):
             stdscr.getstr()
             stdscr.clear()
         pl += 1
-        if pl > 4: pl = 0
+        if pl > 4:
+            pl = 0
     if not quit:
         stdscr.getstr()
+
 
 def run_interactive(stdscr):
     run(drac_game.game, stdscr)

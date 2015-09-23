@@ -3,6 +3,7 @@ class Link:
     b = -1
     t = -1
 
+
 def haslink(game, a, b, p, t):
     if p is not None and p.index == 4:
         if game.locations[a].abbrev == 'JM' or game.locations[b].abbrev == 'JM':
@@ -13,6 +14,7 @@ def haslink(game, a, b, p, t):
         if link.t == t and link.b == max(a, b):
             return True
     return False
+
 
 def hasraillink(game, a, b, p, length):
     if p is not None and p.index == 4:
@@ -35,23 +37,26 @@ def hasraillink(game, a, b, p, length):
                         return True
     return False
 
+
 def hasanylink(game, a, b, p, max_rails):
     return haslink(game, a, b, p, 1) or hasraillink(game, a, b, p, max_rails) or haslink(game, a, b, p, 3)
 
+
 def addlink(game, a, b, t):
-    link   = Link()
+    link = Link()
     link.a = min(a, b)
     link.b = max(a, b)
     link.t = t
     game.locations[link.a].links.append(link)
     game.locations[link.b].links.append(link)
 
+
 def addlinks(game):
-    addlink(game, 0, 6,  3)
+    addlink(game, 0, 6, 3)
     addlink(game, 0, 32, 3)
     addlink(game, 0, 67, 3)
 
-    addlink(game, 1, 5,  2)
+    addlink(game, 1, 5, 2)
     addlink(game, 1, 30, 1)
     addlink(game, 1, 40, 1)
     addlink(game, 1, 40, 2)
@@ -65,7 +70,7 @@ def addlinks(game):
     addlink(game, 3, 32, 3)
     addlink(game, 3, 65, 1)
 
-    addlink(game, 4, 7,  3)
+    addlink(game, 4, 7, 3)
     addlink(game, 4, 15, 3)
     addlink(game, 4, 23, 3)
     addlink(game, 4, 27, 3)

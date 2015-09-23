@@ -29,7 +29,7 @@ Valid settings are:
     If ai' or 'ai_mode' ; drac enters AI mode, calling ./ai/hunter(_NAME).py and ./ai/dracula.py
                                                              if _NAME is present, use it instead of hunter.py
 """
-mode  = 'p'
+mode = 'i'
 
 """
 Whether the current user is the client or the server.
@@ -42,7 +42,7 @@ networked_i_am_client = True
 """
 The server IP to connect to when running in client mode.
 """
-networked_server_ip   = '0.0.0.0'
+networked_server_ip = '0.0.0.0'
 
 """
 The server port to connect to when running in client mode.
